@@ -98,7 +98,7 @@ export const getHandle = async () => {
 	};
 	try {
 		const dirHandle = await window.showDirectoryPicker(options);
-		await set('mods', dirHandle);
+		await set(dirHandle.name, dirHandle);
 		return dirHandle;
 	} catch (error) {
 		console.error(error.name, error.message);

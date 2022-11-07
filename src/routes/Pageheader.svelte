@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { get, set } from 'idb-keyval';
+	import { getHandle } from '$lib/helper';
 
 	export let searchTerm = '';
 	export let hh = 0;
@@ -8,14 +9,35 @@
 	let libs_folder = false;
 
 	onMount(async () => {
-		if (await get('mods')) {
+		if (await get('nml_mods')) {
 			mods_folder = true;
 		}
 	});
 	onMount(async () => {
-		if (await get('libs')) {
+		if (await get('nml_libs')) {
 			libs_folder = true;
 		}
+	});
+
+	onMount(() => {
+		const setModsDirectory = document.getElementById('setModsDirectory');
+		// @ts-ignore
+		setModsDirectory.addEventListener('click', async () => {
+			const handle = await getHandle();
+			if (handle) {
+				mods_folder = true;
+			}
+		});
+	});
+	onMount(() => {
+		const setLibsDirectory = document.getElementById('setLibsDirectory');
+		// @ts-ignore
+		setLibsDirectory.addEventListener('click', async () => {
+			const handle = await getHandle();
+			if (handle) {
+				libs_folder = true;
+			}
+		});
 	});
 
 	/**
@@ -47,6 +69,7 @@
 			Load Mods
 		</button>
 		<button
+			id="setModsDirectory"
 			type="button"
 			class="inline-flex items-center rounded-lg border border-gray-200 px-5 py-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500  dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
 		>
@@ -76,6 +99,7 @@
 			Mods
 		</button>
 		<button
+			id="setLibsDirectory"
 			type="button"
 			class="inline-flex items-center rounded-lg border border-gray-200 px-5 py-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500  dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
 		>

@@ -37,7 +37,7 @@
 	onMount(() => {
 		const butDir = document.getElementById('butDirectory');
 		butDir.addEventListener('click', async () => {
-			const directoryHandleOrUndefined = await get('mods');
+			const directoryHandleOrUndefined = await get('nml_mods');
 			if (directoryHandleOrUndefined) {
 				await verifyPermission(directoryHandleOrUndefined, true);
 				console.log(directoryHandleOrUndefined);
