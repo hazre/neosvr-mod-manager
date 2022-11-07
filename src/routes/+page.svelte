@@ -9,6 +9,7 @@
 	import { onMount } from 'svelte';
 	import Supportmodal from './Supportmodal.svelte';
 	import { get, set } from 'idb-keyval';
+	import Pickmodal from './Pickmodal.svelte';
 
 	/** @type {import('./$types').PageData} */
 	export let data;
