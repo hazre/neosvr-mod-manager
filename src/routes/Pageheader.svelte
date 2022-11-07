@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { get, set } from 'idb-keyval';
+	import { get } from 'idb-keyval';
 	import { getHandle } from '$lib/helper';
 
 	export let searchTerm = '';
@@ -38,6 +38,8 @@
 				libs_folder = true;
 			}
 		});
+
+		// FIX: broken on mobile (doesnt matter for now)
 	});
 
 	/**
@@ -51,10 +53,17 @@
 	bind:offsetHeight={hh}
 >
 	<div class="flex items-center space-x-2">
-		<h1 class="flex-1 text-2xl font-extrabold dark:text-white">
-			NeosVR
-			<small class="ml-2 font-semibold text-gray-500 dark:text-gray-400">Mod Manager</small>
-		</h1>
+		<div class="flex flex-1 items-center space-x-2">
+			<img
+				class="hidden h-9 w-9 saturate-[.8] hover:animate-spin sm:inline-block"
+				src="/neos.svg"
+				alt="Neos Logo"
+			/>
+			<h1 class="text-xl font-extrabold text-gray-900 dark:text-white sm:text-2xl">
+				NeosVR
+				<small class="font-semibold text-gray-500 dark:text-gray-400">Mod Manager</small>
+			</h1>
+		</div>
 		<!-- <button
 			id="butDirectory"
 			type="button"
@@ -84,6 +93,7 @@
 				>
 					<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
 				</svg>
+				Mods
 			{:else}
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -95,8 +105,8 @@
 				>
 					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 				</svg>
+				<span>Select <code>nml_mods</code> Folder</span>
 			{/if}
-			Mods
 		</button>
 		<button
 			id="setLibsDirectory"
@@ -114,6 +124,7 @@
 				>
 					<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
 				</svg>
+				Libs
 			{:else}
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -125,9 +136,36 @@
 				>
 					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 				</svg>
+				<span>Select <code>nml_libs</code> Folder</span>
 			{/if}
-			Libs
 		</button>
+		<a
+			href="https://github.com/hazre/neosvr-mod-manager"
+			data-tooltip-target="tooltip-github-2"
+			class="mr-1 hidden items-center rounded-lg border border-gray-200 p-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:text-gray-300  dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600 sm:inline-block"
+		>
+			<svg
+				class="h-5 w-5"
+				aria-hidden="true"
+				focusable="false"
+				data-prefix="fab"
+				data-icon="github"
+				role="img"
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 496 512"
+				><path
+					fill="currentColor"
+					d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"
+				/></svg
+			>
+			<span class="sr-only">View on Github</span>
+		</a>
+		<!-- <button
+			type="button"
+			class="inline-flex items-center rounded-lg border border-gray-200 px-5 py-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500  dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+		>
+			FAQ
+		</button> -->
 	</div>
 
 	<form class="flex items-center space-x-2">
@@ -157,112 +195,197 @@
 					type="search"
 					id="default-search"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					placeholder="Search Mockups, Logos..."
-					required
+					placeholder="Search for Mods name, description, author..."
 					bind:value={searchTerm}
 				/>
 			</div>
 		</div>
 
-		<div>
-			<button
-				id="dropdownCheckboxButton"
-				data-dropdown-toggle="dropdownDefaultCheckbox"
-				class="inline-flex items-center rounded-lg bg-blue-700 p-4 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-				type="button"
+		<button
+			id="dropdownSearchButton"
+			data-dropdown-toggle="dropdownSearch"
+			class="inline-flex items-center rounded-lg bg-blue-700 p-4 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+			type="button"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="1.5"
+				stroke="currentColor"
+				class="h-5 w-5"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
+				/>
+			</svg></button
+		>
+
+		<!-- Dropdown menu -->
+		<div
+			id="dropdownSearch"
+			class="z-10 hidden w-60 rounded bg-white shadow dark:bg-gray-700"
+			style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, 10px);"
+			data-popper-reference-hidden=""
+			data-popper-escaped=""
+			data-popper-placement="bottom"
+		>
+			<div class="p-3">
+				<label for="input-group-search" class="sr-only">Search</label>
+				<div class="relative">
+					<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+						<svg
+							class="h-5 w-5 text-gray-500 dark:text-gray-400"
+							aria-hidden="true"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+							xmlns="http://www.w3.org/2000/svg"
+							><path
+								fill-rule="evenodd"
+								d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+								clip-rule="evenodd"
+							/></svg
+						>
+					</div>
+					<input
+						type="text"
+						id="input-group-search"
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+						placeholder="Search user"
+					/>
+				</div>
+			</div>
+			<ul
+				class="h-48 overflow-y-auto px-3 pb-3 text-sm text-gray-700 dark:text-gray-200"
+				aria-labelledby="dropdownSearchButton"
+			>
+				<li>
+					<div class="flex items-center rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+						<input
+							id="checkbox-item-11"
+							type="checkbox"
+							value=""
+							class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+						/>
+						<label
+							for="checkbox-item-11"
+							class="ml-2 w-full rounded text-sm font-medium text-gray-900 dark:text-gray-300"
+							>Bonnie Green</label
+						>
+					</div>
+				</li>
+				<li>
+					<div class="flex items-center rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+						<input
+							checked
+							id="checkbox-item-12"
+							type="checkbox"
+							value=""
+							class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+						/>
+						<label
+							for="checkbox-item-12"
+							class="ml-2 w-full rounded text-sm font-medium text-gray-900 dark:text-gray-300"
+							>Jese Leos</label
+						>
+					</div>
+				</li>
+				<li>
+					<div class="flex items-center rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+						<input
+							id="checkbox-item-13"
+							type="checkbox"
+							value=""
+							class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+						/>
+						<label
+							for="checkbox-item-13"
+							class="ml-2 w-full rounded text-sm font-medium text-gray-900 dark:text-gray-300"
+							>Michael Gough</label
+						>
+					</div>
+				</li>
+				<li>
+					<div class="flex items-center rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+						<input
+							id="checkbox-item-14"
+							type="checkbox"
+							value=""
+							class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+						/>
+						<label
+							for="checkbox-item-14"
+							class="ml-2 w-full rounded text-sm font-medium text-gray-900 dark:text-gray-300"
+							>Robert Wall</label
+						>
+					</div>
+				</li>
+				<li>
+					<div class="flex items-center rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+						<input
+							id="checkbox-item-15"
+							type="checkbox"
+							value=""
+							class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+						/>
+						<label
+							for="checkbox-item-15"
+							class="ml-2 w-full rounded text-sm font-medium text-gray-900 dark:text-gray-300"
+							>Joseph Mcfall</label
+						>
+					</div>
+				</li>
+				<li>
+					<div class="flex items-center rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+						<input
+							id="checkbox-item-16"
+							type="checkbox"
+							value=""
+							class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+						/>
+						<label
+							for="checkbox-item-16"
+							class="ml-2 w-full rounded text-sm font-medium text-gray-900 dark:text-gray-300"
+							>Leslie Livingston</label
+						>
+					</div>
+				</li>
+				<li>
+					<div class="flex items-center rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+						<input
+							id="checkbox-item-17"
+							type="checkbox"
+							value=""
+							class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+						/>
+						<label
+							for="checkbox-item-17"
+							class="ml-2 w-full rounded text-sm font-medium text-gray-900 dark:text-gray-300"
+							>Roberta Casas</label
+						>
+					</div>
+				</li>
+			</ul>
+			<a
+				href="#"
+				class="flex items-center border-t border-gray-200 bg-gray-50 p-3 text-sm font-medium text-red-600 hover:bg-gray-100 hover:underline dark:border-gray-600 dark:bg-gray-700 dark:text-red-500 dark:hover:bg-gray-600"
 			>
 				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke-width="1.5"
-					stroke="currentColor"
-					class="h-5 w-5"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
-					/>
-				</svg>
-
-				<!-- <svg
-					class="ml-2 h-4 w-4"
+					class="mr-1 h-5 w-5"
 					aria-hidden="true"
-					fill="none"
-					stroke="currentColor"
-					viewBox="0 0 24 24"
+					fill="currentColor"
+					viewBox="0 0 20 20"
 					xmlns="http://www.w3.org/2000/svg"
 					><path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M19 9l-7 7-7-7"
-					/></svg> -->
-			</button>
-
-			<!-- Dropdown menu -->
-			<div
-				id="dropdownDefaultCheckbox"
-				class="z-10 hidden w-48 divide-y divide-gray-100 rounded bg-white shadow dark:divide-gray-600 dark:bg-gray-700"
-				style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, 442px);"
-				data-popper-reference-hidden=""
-				data-popper-escaped=""
-				data-popper-placement="bottom"
-			>
-				<ul
-					class="space-y-3 p-3 text-sm text-gray-700 dark:text-gray-200"
-					aria-labelledby="dropdownCheckboxButton"
+						d="M11 6a3 3 0 11-6 0 3 3 0 016 0zM14 17a6 6 0 00-12 0h12zM13 8a1 1 0 100 2h4a1 1 0 100-2h-4z"
+					/></svg
 				>
-					<li>
-						<div class="flex items-center">
-							<input
-								id="checkbox-item-1"
-								type="checkbox"
-								value=""
-								class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
-							/>
-							<label
-								for="checkbox-item-1"
-								class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-								>Default checkbox</label
-							>
-						</div>
-					</li>
-					<li>
-						<div class="flex items-center">
-							<input
-								checked
-								id="checkbox-item-2"
-								type="checkbox"
-								value=""
-								class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
-							/>
-							<label
-								for="checkbox-item-2"
-								class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-								>Checked state</label
-							>
-						</div>
-					</li>
-					<li>
-						<div class="flex items-center">
-							<input
-								id="checkbox-item-3"
-								type="checkbox"
-								value=""
-								class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
-							/>
-							<label
-								for="checkbox-item-3"
-								class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-								>Default checkbox</label
-							>
-						</div>
-					</li>
-				</ul>
-			</div>
+				Delete user
+			</a>
 		</div>
+
 		<!-- <button
 			type="submit"
 			class="ml-2 rounded-lg border border-blue-700 bg-blue-700 p-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -284,15 +407,41 @@
 		</button> -->
 	</form>
 
-	<span class="text-xs text-gray-500">
-		Last updated at {new Date(data.date[0].commit.author.date).toLocaleDateString(undefined, {
-			year: 'numeric',
-			month: 'long',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit',
-			timeZone: 'UTC',
-			timeZoneName: 'short'
-		})}
-	</span>
+	<div
+		class="flex flex-col items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 sm:flex-row"
+	>
+		<div>
+			{#if data.date[0]?.commit !== undefined}
+				<span>
+					Last updated at {new Date(data.date[0].commit.author.date).toLocaleDateString(undefined, {
+						year: 'numeric',
+						month: 'long',
+						day: '2-digit',
+						hour: '2-digit',
+						minute: '2-digit',
+						timeZone: 'UTC',
+						timeZoneName: 'short'
+					})}
+				</span>
+			{/if}
+		</div>
+		<span class="hidden sm:inline-block">&bull;</span>
+		<span
+			>Powered by <a
+				class="hover:underline"
+				href="https://www.neosmodloader.com/"
+				target="_blank"
+				rel="noreferrer noopener">NeosModLoader</a
+			></span
+		>
+		<span class="hidden sm:inline-block">&bull;</span>
+		<span
+			>Made by <a
+				class="hover:underline"
+				href="https://twitter.com/hazreh"
+				target="_blank"
+				rel="noreferrer noopener">hazre</a
+			></span
+		>
+	</div>
 </header>

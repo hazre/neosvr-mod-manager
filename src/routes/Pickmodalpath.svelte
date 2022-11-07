@@ -1,9 +1,9 @@
 <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
 	{#if window.navigator.userAgent.toLowerCase().includes('windows')}
 		<div class="font-medium">Common NeosVR installation path:</div>
-		<div class="flex items-center space-x-1">
+		<div class="flex items-center justify-center space-x-1">
 			<p>Windows:</p>
-			<code class="select-all rounded bg-gray-600 py-0.5 px-2.5 text-xs">
+			<code class="select-all rounded bg-gray-100 py-0.5  px-2.5 text-xs dark:bg-gray-600">
 				%PROGRAMFILES(X86)%\Steam\steamapps\common\NeosVR
 			</code>
 			<button

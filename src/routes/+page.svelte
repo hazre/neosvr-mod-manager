@@ -1,6 +1,6 @@
 <script>
 	// @ts-nocheck
-	import { getHandle, getHash, setHandleHashes, verifyPermission, getHighest } from '$lib/helper';
+	import { getHandle, setHandleHashes, verifyPermission, getHighest, isMobile } from '$lib/helper';
 	import { scale } from 'svelte/transition';
 	import { expoInOut } from 'svelte/easing';
 	import ListItem from './ListItem.svelte';
@@ -8,8 +8,8 @@
 	import Pageheader from './Pageheader.svelte';
 	import { onMount } from 'svelte';
 	import Supportmodal from './Supportmodal.svelte';
-	import { get, set } from 'idb-keyval';
-	import Pickmodal from './Pickmodal.svelte';
+	import { get } from 'idb-keyval';
+	// import { invalidateAll } from '$app/navigation';
 
 	/** @type {import('./$types').PageData} */
 	export let data;
@@ -20,12 +20,21 @@
 
 	let list = Object.values(data.list.mods);
 	let sortedList = list.sort((a, b) => a.name.localeCompare(b.name));
+	sortedList = sortedList.filter(function (item) {
+		return item.category != 'Plugins';
+	});
 	let categories = data.categories.properties.mods.additionalProperties.properties.category.pattern
 		.replace(/[\#^\\;$%@"<>()+,]/g, '')
 		.split('|');
 
 	let supported = true;
+	let mobile = false;
 	let hidden = true;
+	let PickmodalText;
+
+	onMount(async () => {
+		PickmodalText = (await import('./PickmodalText.svelte')).default;
+	});
 
 	onMount(() => {
 		if (typeof window.FileSystemHandle != 'undefined') {
@@ -36,13 +45,19 @@
 	});
 
 	onMount(() => {
+		if (isMobile()) {
+			mobile = true;
+		}
+	});
+
+	onMount(() => {
 		const butDir = document.getElementById('butDirectory');
 		butDir.addEventListener('click', async () => {
 			const directoryHandleOrUndefined = await get('nml_mods');
 			if (directoryHandleOrUndefined) {
 				await verifyPermission(directoryHandleOrUndefined, true);
-				console.log(directoryHandleOrUndefined);
 				const hashes = await setHandleHashes(directoryHandleOrUndefined);
+				// TODO: clean up this mess..
 				hashes.forEach((hash, index) => {
 					sortedList.map((mod) => {
 						mod.latest = getHighest(Object.keys(mod.versions));
@@ -59,7 +74,7 @@
 						});
 					});
 				});
-				console.log('done');
+				console.info('Mods loaded');
 				hidden = false;
 				return;
 			}
@@ -72,6 +87,7 @@
 	 */
 	let filteredList = [];
 	let searchTerm = '';
+	// TODO: add categories and other filter options
 	$: if (searchTerm) {
 		filteredList = sortedList.filter(
 			(item) =>
@@ -88,9 +104,11 @@
 
 {#if !supported}
 	<Supportmodal />
-	<!-- {:else}
-	<Pickmodal /> -->
 {/if}
+
+<!-- {#if mobile}
+	<p>mobile</p>
+{/if} -->
 
 <main class="flex h-full w-full flex-col">
 	<Pageheader bind:data bind:hh bind:searchTerm />
@@ -99,12 +117,7 @@
 		style="--header-height: {hh}px"
 	>
 		{#if hidden}
-			<div
-				class="fixed inset-0 top-0 right-0 left-0 flex h-full flex-col items-center justify-center overflow-y-auto overflow-x-hidden"
-			>
-				<p class="text-4xl font-medium">Mods are not loaded... 🤨</p>
-				<p class=" font-light italic">Click on the funny button</p>
-			</div>
+			<svelte:component this={PickmodalText} />
 		{:else}
 			<VirtualList width="100%" height={vh} itemCount={filteredList.length} itemSize={141}>
 				<div

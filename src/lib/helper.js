@@ -112,6 +112,9 @@ export const getHighest = (data) => {
 	return highest;
 };
 
+export const isMobile = () =>
+	/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
 // transition:scale={{ duration: 1000, easing: expoInOut }}
 
 // bind:offsetHeight={listOffsetHeight}
