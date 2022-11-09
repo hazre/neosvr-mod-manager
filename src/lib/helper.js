@@ -3,7 +3,6 @@ import { get, set } from 'idb-keyval';
 import { writable } from 'svelte/store';
 
 export const hashes = writable(new Set());
-export const mods = writable([]);
 
 /**
  * @param {"SHA-1"|"SHA-256"|"SHA-384"|"SHA-512"} algorithm https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
@@ -25,28 +24,6 @@ export async function getHash(algorithm, data) {
 	const encoder = new TextEncoder();
 	const msgUint8 = encoder.encode(data);
 	return await main(msgUint8);
-}
-
-export function findNested(obj, key, value) {
-	// Base case
-	if (obj[key] === value) {
-		return obj;
-	} else {
-		var keys = Object.keys(obj); // add this line to iterate over the keys
-
-		for (var i = 0, len = keys.length; i < len; i++) {
-			var k = keys[i]; // use this key for iteration, instead of index "i"
-
-			// add "obj[k] &&" to ignore null values
-			if (obj[k] && typeof obj[k] == 'object') {
-				var found = findNested(obj[k], key, value);
-				if (found) {
-					// If the object was found in the recursive call, bubble it up.
-					return found;
-				}
-			}
-		}
-	}
 }
 
 export async function verifyPermission(fileHandle, readWrite) {
@@ -92,13 +69,35 @@ export const setHandleHashes = async (dirHandle) => {
 	}
 };
 
+// FIX: some nightmare fuel over here welp (refactor)
 export const getHandle = async () => {
 	const options = {
 		mode: 'readwrite'
 	};
 	try {
 		const dirHandle = await window.showDirectoryPicker(options);
+
+		let file;
+		try {
+			file = !!(await dirHandle.getFileHandle('Neos.exe'));
+		} catch (error) {
+			file = false;
+			return await getHandle();
+		}
+
+		let folders = ['nml_mods', 'nml_libs'];
+
+		for await (const entry of dirHandle.values()) {
+			if (entry.kind !== 'directory') {
+				continue;
+			}
+			if (!folders.some((dir) => dir.includes(entry.name))) {
+				continue;
+			}
+			await set(entry.name, entry);
+		}
 		await set(dirHandle.name, dirHandle);
+
 		return dirHandle;
 	} catch (error) {
 		console.error(error.name, error.message);
@@ -115,32 +114,57 @@ export const getHighest = (data) => {
 export const isMobile = () =>
 	/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-// transition:scale={{ duration: 1000, easing: expoInOut }}
+const checkFile = async (releaseObj) => {
+	let folder;
+	if (releaseObj?.installLocation === '/nml_libs') {
+		folder = await get('nml_libs');
+	} else {
+		folder = await get('nml_mods');
+	}
+	if (!folder) {
+		return null;
+	}
+	await verifyPermission(folder, true);
+	return folder;
+};
 
-// bind:offsetHeight={listOffsetHeight}
+const getFilename = (obj) => {
+	return new URL(obj.url).pathname.split('/').reverse()[0];
+};
 
-// let matched = findNested(
-//   sortedList,
-//   'sha256',
-//   'f741de990b9fb502fb71a052d04ad178ecde2e7717955eca37d5ffebc2968b81'
-// );
-// if (matched) {
-//   console.log(new URL(matched.url).pathname.split('/').reverse()[1]);
-// }
+export const download = async (releaseObj) => {
+	const folder = await checkFile(releaseObj);
+	if (!folder) {
+		return null;
+	}
+	const handle = await folder.getFileHandle(getFilename(releaseObj), {
+		create: true
+	});
+	try {
+		const writer = await handle.createWritable();
+		const res = await fetch(`/api/dl?url=${releaseObj.url}`);
+		// console.log(res);
+		const ab = await res.arrayBuffer();
+		writer.truncate(ab.byteLength);
+		writer.write(ab);
+		writer.close();
+		return true;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
 
-// const folder = await window.showDirectoryPicker()
-
-// const promises = []
-// for await (const [name, handle] = folder.entries()) {
-//     promises.push((async()=>{
-//         const writer = await handle.createWritable()
-//         const res = await fetch(api + name)
-//         const ab = await res.arrayBuffer()
-//         writer.truncate(ab.byteLength)
-//         writer.write(ab)
-//         writer.close()
-//         const hash = await new Promise(resolve => sha1(ab, resolve))
-//         return { hash, name }
-//     })())
-// }
-// const results = await Promise.all(promises)
+export const deleteFile = async (releaseObj) => {
+	const folder = await checkFile(releaseObj);
+	if (!folder) {
+		return null;
+	}
+	try {
+		const handle = await folder.removeEntry(getFilename(releaseObj));
+		return true;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};

@@ -28,6 +28,7 @@
 		.split('|');
 
 	let supported = true;
+	let loaded = false;
 	let mobile = false;
 	let hidden = true;
 	let PickmodalText;
@@ -51,34 +52,37 @@
 	});
 
 	onMount(() => {
-		const butDir = document.getElementById('butDirectory');
+		const butDir = document.getElementById('setNeosDirectory');
 		butDir.addEventListener('click', async () => {
-			const directoryHandleOrUndefined = await get('nml_mods');
-			if (directoryHandleOrUndefined) {
-				await verifyPermission(directoryHandleOrUndefined, true);
-				const hashes = await setHandleHashes(directoryHandleOrUndefined);
-				// TODO: clean up this mess..
-				hashes.forEach((hash, index) => {
-					sortedList.map((mod) => {
-						mod.latest = getHighest(Object.keys(mod.versions));
-						Object.keys(mod.versions).map((version_key) => {
-							Object.values(mod.versions).map((version) => {
-								version.version = version_key;
-								Object.values(version.artifacts).map((artifact) => {
-									if (hash === artifact.sha256) {
-										mod.installed = true;
-										mod.installed_version = version_key;
-									}
-								});
-							});
+			let directoryHandleOrUndefined = await get('NeosVR');
+			if (!directoryHandleOrUndefined) {
+				directoryHandleOrUndefined = await getHandle();
+			}
+			console.log('start verify');
+			await verifyPermission(directoryHandleOrUndefined, true);
+			let hashes = await setHandleHashes(await get('nml_mods'));
+			hashes = await setHandleHashes(await get('nml_libs'));
+			// TODO: clean up this mess..
+			hashes.forEach((hash, index) => {
+				sortedList.map((mod) => {
+					let key = Object.keys(mod.versions);
+					mod.latest = getHighest(key);
+					key.map((version_key) => {
+						mod.versions[version_key].version = version_key;
+						Object.values(mod.versions[version_key].artifacts).map((artifact) => {
+							if (hash === artifact.sha256) {
+								mod.installed = true;
+								mod.installed_version = version_key;
+							}
 						});
 					});
 				});
-				console.info('Mods loaded');
-				hidden = false;
-				return;
-			}
-			console.log(await getHandle());
+			});
+			console.info('Mods loaded');
+			console.log(sortedList);
+			loaded = true;
+			hidden = false;
+			return;
 		});
 	});
 
@@ -101,6 +105,9 @@
 </script>
 
 <svelte:window bind:innerHeight={vh} />
+<svelte:head>
+	<title>NeosVR Mod Manager</title>
+</svelte:head>
 
 {#if !supported}
 	<Supportmodal />
@@ -111,7 +118,7 @@
 {/if} -->
 
 <main class="flex h-full w-full flex-col">
-	<Pageheader bind:data bind:hh bind:searchTerm />
+	<Pageheader bind:data bind:hh bind:searchTerm {loaded} />
 	<div
 		class="list grow divide-y divide-gray-200 dark:divide-gray-700"
 		style="--header-height: {hh}px"
