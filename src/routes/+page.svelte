@@ -1,6 +1,12 @@
 <script>
-	// @ts-nocheck
-	import { getHandle, setHandleHashes, verifyPermission, getHighest, isMobile } from '$lib/helper';
+	import {
+		getHandle,
+		setHandleHashes,
+		verifyPermission,
+		getHighest,
+		isMobile,
+		getFilename
+	} from '$lib/helper';
 	import { scale } from 'svelte/transition';
 	import { expoInOut } from 'svelte/easing';
 	import ListItem from './ListItem.svelte';
@@ -9,14 +15,12 @@
 	import { onMount } from 'svelte';
 	import Supportmodal from './Supportmodal.svelte';
 	import { get } from 'idb-keyval';
-	// import { invalidateAll } from '$app/navigation';
 
 	/** @type {import('./$types').PageData} */
 	export let data;
 
 	let vh = 0;
 	let hh = 0;
-	// let listOffsetHeight = 0;
 
 	let list = Object.values(data.list.mods);
 	let sortedList = list.sort((a, b) => a.name.localeCompare(b.name));
@@ -31,12 +35,16 @@
 	let loaded = false;
 	let mobile = false;
 	let hidden = true;
+	/**
+	 * @type {typeof import("./PickmodalText.svelte").default}
+	 */
 	let PickmodalText;
 
 	onMount(async () => {
 		PickmodalText = (await import('./PickmodalText.svelte')).default;
 	});
 
+	// check browser support forFileSystemHandle
 	onMount(() => {
 		if (typeof window.FileSystemHandle != 'undefined') {
 			supported = true;
@@ -45,6 +53,7 @@
 		}
 	});
 
+	// TODO: Warn mobile users
 	onMount(() => {
 		if (isMobile()) {
 			mobile = true;
@@ -53,22 +62,39 @@
 
 	onMount(() => {
 		const butDir = document.getElementById('setNeosDirectory');
+		// @ts-ignore
 		butDir.addEventListener('click', async () => {
 			let directoryHandleOrUndefined = await get('NeosVR');
 			if (!directoryHandleOrUndefined) {
 				directoryHandleOrUndefined = await getHandle();
 			}
-			console.log('start verify');
 			await verifyPermission(directoryHandleOrUndefined, true);
 			let hashes = await setHandleHashes(await get('nml_mods'));
 			hashes = await setHandleHashes(await get('nml_libs'));
 			// TODO: clean up this mess..
+			// @ts-ignore
 			hashes.forEach((hash, index) => {
 				sortedList.map((mod) => {
-					let key = Object.keys(mod.versions);
+					const key = Object.keys(mod.versions);
 					mod.latest = getHighest(key);
 					key.map((version_key) => {
 						mod.versions[version_key].version = version_key;
+						if (mod.versions[version_key]?.dependencies) {
+							Object.keys(mod.versions[version_key]?.dependencies).map((dependency) => {
+								try {
+									const lastdep = Object.keys(data.list.mods[dependency].versions);
+									const lastartifact =
+										data.list.mods[dependency].versions[getHighest(lastdep)].artifacts[0];
+									mod.versions[version_key].dependencies[dependency].url = lastartifact.url;
+									mod.versions[version_key].dependencies[dependency].sha256 = lastartifact.sha256;
+									mod.versions[version_key].dependencies[dependency].filename = getFilename(
+										lastartifact.url
+									);
+								} catch (error) {
+									console.error(error);
+								}
+							});
+						}
 						Object.values(mod.versions[version_key].artifacts).map((artifact) => {
 							if (hash === artifact.sha256) {
 								mod.installed = true;

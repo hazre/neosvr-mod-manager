@@ -3,9 +3,22 @@
 	import { get } from 'idb-keyval';
 
 	export let searchTerm = '';
-	export let hh = 0;
-	let neos_folder = false;
 	export let loaded = false;
+	export let hh = 0;
+	// let darkmode = false;
+	let neos_folder = false;
+	/**
+	 * @type Intl.DateTimeFormatOptions
+	 */
+	const dateFormat = {
+		year: 'numeric',
+		month: 'long',
+		day: '2-digit',
+		hour: '2-digit',
+		minute: '2-digit',
+		timeZone: 'UTC',
+		timeZoneName: 'short'
+	};
 
 	onMount(async () => {
 		if (await get('NeosVR')) {
@@ -20,7 +33,7 @@
 </script>
 
 <header
-	class="fixed top-0 left-0 right-0 z-10 mx-4 flex flex-col gap-2 border-gray-200 bg-white py-2.5 dark:bg-gray-900"
+	class="fixed top-0 left-0 right-0 z-10 mx-4 flex flex-col space-y-2 border-gray-200 bg-white py-2.5 dark:bg-gray-900"
 	bind:offsetHeight={hh}
 >
 	<div class="flex items-center space-x-2">
@@ -39,12 +52,6 @@
 				>
 			</h1>
 		</div>
-		<!-- <button
-			id="butDirectory"
-			type="button"
-			class="mr-2 rounded-md border border-gray-800 px-2.5 py-1 text-center text-sm font-medium text-gray-900 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-800"
-			>Open Folder</button
-		> -->
 		<button
 			id="setNeosDirectory"
 			type="button"
@@ -64,46 +71,6 @@
 					</svg>
 					Loaded
 				{:else}
-					<!-- <svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="2.5"
-						stroke="currentColor"
-						class="mr-2 -ml-1 h-5 w-5 text-red-500"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-					</svg> -->
-					<!-- <svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="1.5"
-						stroke="currentColor"
-						class="mr-2 -ml-1 h-5 w-5 text-yellow-500"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"
-						/> 
-					</svg>-->
-					<!-- 
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="2.5"
-						stroke="currentColor"
-						class="mr-2 -ml-1 h-5 w-5 text-yellow-500"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
-						/>
-					</svg> -->
-
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
@@ -118,7 +85,6 @@
 							d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
 						/>
 					</svg>
-
 					Load Mods
 				{/if}
 			{:else}
@@ -135,8 +101,17 @@
 				<span>Select <code>NeosVR</code> Folder</span>
 			{/if}
 		</button>
+		<!-- TODO: add faq -->
+		<!-- <button
+			type="button"
+			class="inline-flex items-center rounded-lg border border-gray-200 px-5 py-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500  dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+		>
+			FAQ
+		</button> -->
 		<a
 			href="https://github.com/hazre/neosvr-mod-manager"
+			target="_blank"
+			rel="noreferrer noopener"
 			data-tooltip-target="tooltip-github-2"
 			class="mr-1 hidden items-center rounded-lg border border-gray-200 p-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:text-gray-300  dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600 sm:inline-block"
 		>
@@ -156,11 +131,43 @@
 			>
 			<span class="sr-only">View on Github</span>
 		</a>
+		<!-- TODO: add manual darkmode toggle -->
 		<!-- <button
-			type="button"
-			class="inline-flex items-center rounded-lg border border-gray-200 px-5 py-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500  dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+			on:click={() => (darkmode = !darkmode)}
+			class="mr-1 hidden items-center rounded-lg border border-gray-200 p-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:text-gray-300  dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600 sm:inline-block"
 		>
-			FAQ
+			{#if darkmode}
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.5"
+					stroke="currentColor"
+					class="h-5 w-5"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+					/>
+				</svg>
+			{:else}
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.5"
+					stroke="currentColor"
+					class="h-5 w-5"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+					/>
+				</svg>
+			{/if}
+			<span class="sr-only">Dark mode Toggle</span>
 		</button> -->
 	</div>
 
@@ -381,63 +388,51 @@
 				Delete user
 			</a>
 		</div>
-
-		<!-- <button
-			type="submit"
-			class="ml-2 rounded-lg border border-blue-700 bg-blue-700 p-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-		>
-			<svg
-				class="h-5 w-5"
-				fill="none"
-				stroke="currentColor"
-				viewBox="0 0 24 24"
-				xmlns="http://www.w3.org/2000/svg"
-				><path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-				/></svg
-			>
-			<span class="sr-only">Search</span>
-		</button> -->
 	</form>
 
-	<div
-		class="flex flex-col items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 sm:flex-row"
+	<ul
+		class="list-horizontal flex flex-col items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 sm:flex-row"
 	>
-		<div>
+		<li>
 			{#if data.date[0]?.commit !== undefined}
 				<span>
-					Last updated at {new Date(data.date[0].commit.author.date).toLocaleDateString(undefined, {
-						year: 'numeric',
-						month: 'long',
-						day: '2-digit',
-						hour: '2-digit',
-						minute: '2-digit',
-						timeZone: 'UTC',
-						timeZoneName: 'short'
-					})}
+					Last updated at <a
+						href="https://github.com/neos-modding-group/neos-mod-manifest/commits/master/manifest.json"
+						class="hover:underline"
+						target="_blank"
+						rel="noreferrer noopener"
+					>
+						{new Date(data.date[0].commit.author.date).toLocaleDateString(undefined, dateFormat)}
+					</a>
 				</span>
 			{/if}
-		</div>
-		<span class="hidden sm:inline-block">&bull;</span>
-		<span
-			>Powered by <a
+		</li>
+		<li class="hidden sm:inline-block">&bull;</li>
+		<li>
+			Not affiliated with <a
+				href="https://neos.com/"
+				class="hover:underline"
+				target="_blank"
+				rel="noreferrer noopener">NeosVR</a
+			>
+		</li>
+		<li class="hidden sm:inline-block">&bull;</li>
+		<li>
+			Powered by <a
 				class="hover:underline"
 				href="https://www.neosmodloader.com/"
 				target="_blank"
 				rel="noreferrer noopener">NeosModLoader</a
-			></span
-		>
-		<span class="hidden sm:inline-block">&bull;</span>
-		<span
-			>Made by <a
+			>
+		</li>
+		<li class="hidden sm:inline-block">&bull;</li>
+		<li>
+			Made by <a
 				class="hover:underline"
 				href="https://twitter.com/hazreh"
 				target="_blank"
 				rel="noreferrer noopener">hazre</a
-			></span
-		>
-	</div>
+			>
+		</li>
+	</ul>
 </header>

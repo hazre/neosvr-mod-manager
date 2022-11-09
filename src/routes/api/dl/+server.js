@@ -10,7 +10,7 @@ export async function GET({ url }) {
 	let body = asset.body;
 	let headers = Object.fromEntries(asset.headers.entries());
 
-	headers['Access-Control-Allow-Origin'] = 'http://localhost:5173';
+	headers['Access-Control-Allow-Origin'] = 'http://localhost:5174';
 
 	return new Response(body, {
 		headers: headers

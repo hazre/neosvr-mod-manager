@@ -128,8 +128,8 @@ const checkFile = async (releaseObj) => {
 	return folder;
 };
 
-const getFilename = (obj) => {
-	return new URL(obj.url).pathname.split('/').reverse()[0];
+export const getFilename = (url) => {
+	return new URL(url).pathname.split('/').reverse()[0];
 };
 
 export const download = async (releaseObj) => {
@@ -137,7 +137,7 @@ export const download = async (releaseObj) => {
 	if (!folder) {
 		return null;
 	}
-	const handle = await folder.getFileHandle(getFilename(releaseObj), {
+	const handle = await folder.getFileHandle(getFilename(releaseObj.url), {
 		create: true
 	});
 	try {
