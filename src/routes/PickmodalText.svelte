@@ -1,6 +1,6 @@
 <script>
 	import Pickmodalpath from './Pickmodalpath.svelte';
-	import { fly } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
 
 	const emojis = ['😓', '🤨', '🫤', '🤐', '🫠', '😩', '🥺', '😳', '🥴', '😭'];
 
@@ -9,7 +9,7 @@
 
 <div
 	class="fixed inset-0 top-0 right-0 left-0 flex h-full flex-col items-center justify-center overflow-y-auto overflow-x-hidden"
-	in:fly={{ y: 200, duration: 2000 }}
+	in:fade
 >
 	<p class="text-4xl font-medium text-gray-900 dark:text-white">
 		Mods are not loaded... {emojis[randomEmoji]}
@@ -21,9 +21,14 @@
 				<div class="flex items-center justify-center rounded-t border-b p-4 dark:border-gray-600" />
 				<div class="space-y-6 px-6 py-5">
 					<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-						To use NeosVR mod manager, you need to select your <span
-							class="text-gray-900 underline dark:text-white">NeosVR</span
-						> installation folder.
+						To use NeosVR mod manager, you to <a
+							class="text-gray-900 hover:underline dark:text-white"
+							href="https://github.com/neos-modding-group/NeosModLoader#installation"
+							target="_blank"
+							rel="noreferrer noopener">install NeosModLoader</a
+						>
+						and then select your <span class="text-gray-900 dark:text-white">NeosVR</span>
+						installation folder.
 					</p>
 					<Pickmodalpath />
 					<p class="text-sm leading-relaxed text-gray-500 dark:text-gray-400">

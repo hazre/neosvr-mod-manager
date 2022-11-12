@@ -26,6 +26,12 @@ export async function getHash(algorithm, data) {
 	return await main(msgUint8);
 }
 
+/**
+ *
+ * @param {} fileHandle
+ * @param {boolean} readWrite
+ * @returns
+ */
 export async function verifyPermission(fileHandle, readWrite) {
 	const options = {};
 	if (readWrite) {
@@ -46,6 +52,7 @@ export async function verifyPermission(fileHandle, readWrite) {
 export const setHandleHashes = async (dirHandle) => {
 	let promises = [];
 	let files = [];
+	let list = new Set();
 	for await (const entry of dirHandle.values()) {
 		if (entry.kind !== 'file' && !entry.name.toString().toLowerCase().includes('.dll')) {
 			continue;
@@ -79,7 +86,10 @@ export const getHandle = async () => {
 
 		let file;
 		try {
-			file = !!(await dirHandle.getFileHandle('Neos.exe'));
+			file = !!(
+				(await dirHandle.getDirectoryHandle('nml_mods')) &&
+				(await dirHandle.getDirectoryHandle('nml_libs'))
+			);
 		} catch (error) {
 			file = false;
 			return await getHandle();
@@ -104,11 +114,11 @@ export const getHandle = async () => {
 	}
 };
 
-export const getHighest = (data) => {
-	const highest = data.reduce((a, b) =>
+export const getLatestVersion = (data) => {
+	const latest = data.reduce((a, b) =>
 		0 < a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }) ? a : b
 	);
-	return highest;
+	return latest;
 };
 
 export const isMobile = () =>
@@ -128,22 +138,21 @@ const checkFile = async (releaseObj) => {
 	return folder;
 };
 
-export const getFilename = (url) => {
+export const getFilenameUrl = (url) => {
 	return new URL(url).pathname.split('/').reverse()[0];
 };
 
-export const download = async (releaseObj) => {
+export const downloadFile = async (releaseObj) => {
 	const folder = await checkFile(releaseObj);
 	if (!folder) {
 		return null;
 	}
-	const handle = await folder.getFileHandle(getFilename(releaseObj.url), {
+	const handle = await folder.getFileHandle(getFilenameUrl(releaseObj.url), {
 		create: true
 	});
 	try {
 		const writer = await handle.createWritable();
 		const res = await fetch(`/api/dl?url=${releaseObj.url}`);
-		// console.log(res);
 		const ab = await res.arrayBuffer();
 		writer.truncate(ab.byteLength);
 		writer.write(ab);
@@ -161,10 +170,20 @@ export const deleteFile = async (releaseObj) => {
 		return null;
 	}
 	try {
-		const handle = await folder.removeEntry(getFilename(releaseObj));
+		const handle = await folder.removeEntry(getFilename(releaseObj.url));
 		return true;
 	} catch (error) {
 		console.error(error);
 		return null;
+	}
+};
+
+export const updateCategoryFilter = (categories, category) => {
+	if (categories.some((cat) => cat === category)) {
+		categories = categories.filter((m) => m !== category);
+		return categories;
+	} else {
+		categories = [...categories, category];
+		return categories;
 	}
 };

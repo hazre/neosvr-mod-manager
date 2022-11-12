@@ -17,7 +17,7 @@
 					<img class="h-8 w-8" src="/edge.svg" alt="Edge Browser" />
 					<img class="h-8 w-8 opacity-40 grayscale" src="/firefox.svg" alt="Firefox Browser" />
 					<img class="h-8 w-8" src="/chrome.svg" alt="Chrome Browser" />
-					<img class="h-8 w-8" src="/safari.svg" alt="Safari Browser" />
+					<img class="h-8 w-8 opacity-40 grayscale" src="/safari.svg" alt="Safari Browser" />
 					<img class="h-8 w-8" src="/brave.svg" alt="Brave Browser" />
 				</div>
 			</div>

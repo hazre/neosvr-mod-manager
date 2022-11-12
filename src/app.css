@@ -64,3 +64,94 @@ html {
 	border: 0px solid transparent;
 	box-shadow: none;
 }
+
+.dropdown {
+	@apply relative inline-block;
+}
+.dropdown > *:focus {
+	@apply outline-none;
+}
+.dropdown .dropdown-content {
+	@apply invisible absolute z-50 opacity-0;
+}
+.dropdown-end .dropdown-content {
+	@apply right-0;
+}
+.dropdown-left .dropdown-content {
+	@apply top-0 right-full bottom-auto;
+}
+.dropdown-right .dropdown-content {
+	@apply left-full top-0 bottom-auto;
+}
+.dropdown-bottom .dropdown-content {
+	@apply bottom-auto top-full;
+}
+.dropdown-top .dropdown-content {
+	@apply bottom-full top-auto;
+}
+.dropdown-end.dropdown-right .dropdown-content {
+	@apply bottom-0 top-auto;
+}
+.dropdown-end.dropdown-left .dropdown-content {
+	@apply bottom-0 top-auto;
+}
+.dropdown.dropdown-open .dropdown-content,
+.dropdown.dropdown-hover:hover .dropdown-content,
+.dropdown:not(.dropdown-hover):focus .dropdown-content,
+.dropdown:not(.dropdown-hover):focus-within .dropdown-content {
+	@apply visible opacity-100;
+}
+
+details > summary {
+	@apply list-none;
+}
+
+details > summary::marker, /* Latest Chrome, Edge, Firefox */ 
+details > summary::-webkit-details-marker /* Safari */ {
+	@apply hidden;
+}
+
+[data-accordion-item] button,
+[role='region'] {
+	@apply bg-white dark:bg-gray-900;
+}
+
+[data-accordion-item]:first-of-type button {
+	@apply rounded-t-xl;
+}
+
+[data-accordion-item]:last-of-type button {
+	@apply rounded-b-xl;
+}
+
+[data-accordion-item] button[aria-expanded='true'] {
+	@apply bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white;
+}
+
+[data-accordion-item]:first-of-type button[aria-expanded='true'] {
+	@apply rounded-t-xl !important;
+}
+
+[data-accordion-item]:last-of-type button[aria-expanded='true'] {
+	@apply rounded-none;
+}
+
+[data-accordion-item] button {
+	@apply flex w-full items-center justify-between border border-b-0 border-gray-200 p-5 text-left font-medium text-gray-500 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-gray-800;
+}
+
+[data-accordion-item] [role='region'] {
+	@apply border border-b-0 border-gray-200 p-5 font-light text-gray-500 dark:border-gray-700 dark:text-gray-400;
+}
+
+[data-accordion-item]:last-of-type button {
+	@apply rounded-b-xl border-b;
+}
+
+[data-accordion-item]:last-of-type [role='region'] {
+	@apply rounded-b-xl border-b;
+}
+
+#modal-background {
+	@apply m-0 !important;
+}
