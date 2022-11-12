@@ -15,6 +15,7 @@ const config = {
 			srcDir: './src',
 			scope: '/',
 			base: '/',
+			outDir: './.svelte-kit/cloudflare',
 			devOptions: {
 				enabled: true,
 				type: 'module',
