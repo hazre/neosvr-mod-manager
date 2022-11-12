@@ -23,6 +23,11 @@
     </p>
     Want to give it a try? <a href="https://neom.hazre.dev">Click here</a>
 </div>
+<br />
+
+[Preview](https://user-images.githubusercontent.com/37149950/201496329-7e0cbf73-008b-4e37-a791-b2dff1878e64.mp4)
+
+
 
 ## Features
 
