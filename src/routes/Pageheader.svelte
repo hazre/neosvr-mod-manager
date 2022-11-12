@@ -66,7 +66,7 @@
 	class="fixed top-0 left-0 right-0 z-10 mx-4 flex flex-col space-y-2 border-gray-200 bg-white py-2.5 dark:bg-gray-900"
 	bind:offsetHeight={hh}
 >
-	<div class="flex h-[43px] items-center space-x-2">
+	<div class="flex items-center space-x-2">
 		<div class="flex flex-1 items-center space-x-2">
 			<img
 				class="hidden h-9 w-9 hover:animate-spin sm:inline-block"
@@ -97,7 +97,7 @@
 				{/if}
 			{:else}
 				<HeroiconsXMark20Solid class="mr-2 -ml-1 h-5 w-5 text-red-500" />
-				<span>Select <code>NeosVR</code> Folder</span>
+				<span>Select NeosVR Folder</span>
 			{/if}
 		</button>
 		<a

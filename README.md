@@ -5,7 +5,7 @@
 A Mod Manager For [NeosModLoader](https://github.com/neos-modding-group/NeosModLoader).
 Easily install mods and maintain them with ease.
 
-Want to give it a try? [Click here]()
+Want to give it a try? [Click here](https://neom.hazre.dev)
 
 <p>
   <a href="#about">About</a> •
@@ -17,7 +17,7 @@ Want to give it a try? [Click here]()
 ## Features
 
 - No installation Required! (100% Web based)
-- Accessible by a [Single Link]()
+- Accessible by a [Single Link](https://neom.hazre.dev)
 - Search for [all available mods](https://www.neosmodloader.com/mods)
 - Install and uninstall mods without hassle
 - Update your mods with one click
