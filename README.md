@@ -1,18 +1,28 @@
-# NeosVR Mod Manager
+<div align="center">
+  <a href="https://neom.hazre.dev">
+    <img src="static/nml.png" alt="Logo" width="80" height="80">
+  </a>
 
-[![Built for Neos](https://raw.githubusercontent.com/CytraX-Team/NeosRepoBadges/main/built-for-neos.svg)](https://neos.com/)
+  <h3 align="center">NeosVR Mod Manager</h3>
 
-A Mod Manager For [NeosModLoader](https://github.com/neos-modding-group/NeosModLoader).
-Easily install mods and maintain them with ease.
-
-Want to give it a try? [Click here](https://neom.hazre.dev)
-
-<p>
-  <a href="#about">About</a> •
-  <a href="#features">Features</a> •
-  <a href="#limitations">Limiations</a> •
-  <a href="#building-and-development">Building and Development</a>
-</p>
+  <p align="center">
+    A Mod Manager For <a href="https://github.com/neos-modding-group/NeosModLoader">NeosModLoader</a>.
+    <br />
+    Easily install mods and maintain them with ease.
+    <br />
+    <br />
+    <a href="https://neos.com/">
+      <img src="https://raw.githubusercontent.com/CytraX-Team/NeosRepoBadges/main/built-for-neos.svg" alt="Logo" height="28">
+    </a>
+    <br />
+    <p>
+      <a href="#about">About</a> •
+      <a href="#features">Features</a> •
+      <a href="#limitations">Limiations</a> •
+      <a href="#building-and-development">Building and Development</a>
+    </p>
+    Want to give it a try? <a href="https://neom.hazre.dev">Click here</a>
+</div>
 
 ## Features
 
