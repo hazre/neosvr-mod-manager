@@ -170,7 +170,7 @@ export const deleteFile = async (releaseObj) => {
 		return null;
 	}
 	try {
-		const handle = await folder.removeEntry(getFilename(releaseObj.url));
+		const handle = await folder.removeEntry(getFilenameUrl(releaseObj.url));
 		return true;
 	} catch (error) {
 		console.error(error);

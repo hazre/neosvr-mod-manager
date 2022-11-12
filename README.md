@@ -3,7 +3,6 @@
 [![Built for Neos](https://raw.githubusercontent.com/CytraX-Team/NeosRepoBadges/main/built-for-neos.svg)](https://neos.com/)
 
 A Mod Manager For [NeosModLoader](https://github.com/neos-modding-group/NeosModLoader).
-
 Easily install mods and maintain them with ease.
 
 Want to give it a try? [Click here]()
@@ -11,7 +10,7 @@ Want to give it a try? [Click here]()
 <p>
   <a href="#about">About</a> •
   <a href="#features">Features</a> •
-  <a href="#limiations">Limiations</a> •
+  <a href="#limitations">Limiations</a> •
   <a href="#building-and-development">Building and Development</a>
 </p>
 
