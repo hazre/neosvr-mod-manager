@@ -12,9 +12,6 @@ const config = {
 		}),
 		SvelteKitPWA({
 			registerType: 'autoUpdate',
-			srcDir: './src',
-			scope: '/',
-			base: '/',
 			devOptions: {
 				enabled: true,
 				type: 'module',
