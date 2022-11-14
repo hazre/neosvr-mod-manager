@@ -27,12 +27,16 @@ export async function getHash(algorithm, data) {
 }
 
 /**
- *
+ * Checks that the permissions exist to a given file/dir handle.
  * @param {} fileHandle
  * @param {boolean} readWrite
- * @returns
+ * @returns {boolean}
  */
 export async function verifyPermission(fileHandle, readWrite) {
+	// Assuming we'll always have permissions on tauri
+	if (window.__TAURI__) {
+		return true;
+	}
 	const options = {};
 	if (readWrite) {
 		options.mode = 'readwrite';
@@ -50,9 +54,12 @@ export async function verifyPermission(fileHandle, readWrite) {
 }
 
 export const setHandleHashes = async (dirHandle) => {
+	if (window.__TAURI__ !== undefined) {
+		return;
+	}
+
 	let promises = [];
 	let files = [];
-	let list = new Set();
 	for await (const entry of dirHandle.values()) {
 		if (entry.kind !== 'file' && !entry.name.toString().toLowerCase().includes('.dll')) {
 			continue;
@@ -76,8 +83,13 @@ export const setHandleHashes = async (dirHandle) => {
 	}
 };
 
-// FIX: some nightmare fuel over here welp (refactor)
-export const getHandle = async () => {
+
+/**
+ * Stores handles to the files in the idb-keyval store
+ * @returns {Promise<FileSystemDirectoryHandle>} A handle which is used to verify file permissions
+ */
+const getHandleJs = async () => {
+	// FIX: some nightmare fuel over here welp (refactor)
 	const options = {
 		mode: 'readwrite'
 	};
@@ -104,14 +116,54 @@ export const getHandle = async () => {
 			if (!folders.some((dir) => dir.includes(entry.name))) {
 				continue;
 			}
-			await set(entry.name, entry);
+			await set(entry.name, entry.values());
 		}
-		await set(dirHandle.name, dirHandle);
+		await set(dirHandle.name, dirHandle.values());
 
 		return dirHandle;
 	} catch (error) {
 		console.error(error.name, error.message);
 	}
+}
+
+/**
+ * Stores file names to paths in the idb-keyval store
+ * @returns {Promise<void>}
+ */
+const getHandleTauri = async () => {
+	const { open } = window.__TAURI__.dialog;
+	const { readDir } = window.__TAURI__.fs;
+	const { appDir } = window.__TAURI__.path;
+	const dir = await appDir();
+	console.log("opdirir", dir);
+	const selected = await open({
+		directory: true,
+		multiple: false,
+		defaultPath: dir
+	});
+	console.log("select:", selected);
+	if (selected !== null) {
+		const fileEntries = await readDir(selected);
+		const targetFolders = ['nml_mods', 'nml_libs'];
+
+		for await (const entry of fileEntries) {
+			if (!Array.isArray(entry.children)) {
+				continue;
+			}
+			if (!targetFolders.some((dir) => dir.includes(entry.name))) {
+				continue;
+			}
+			await set(entry.name, entry.path);
+		}
+		await set(selected.name, selected.path);
+	} else {
+		throw new Error("No selection");
+	}
+}
+
+export const getHandle = () => {
+	if (window.__TAURI__ !== undefined) return getHandleTauri();
+	else return getHandleJs();
 };
 
 export const getLatestVersion = (data) => {
@@ -147,20 +199,32 @@ export const downloadFile = async (releaseObj) => {
 	if (!folder) {
 		return null;
 	}
-	const handle = await folder.getFileHandle(getFilenameUrl(releaseObj.url), {
-		create: true
-	});
-	try {
-		const writer = await handle.createWritable();
-		const res = await fetch(`/api/dl?url=${releaseObj.url}`);
-		const ab = await res.arrayBuffer();
-		writer.truncate(ab.byteLength);
-		writer.write(ab);
-		writer.close();
-		return true;
-	} catch (error) {
-		console.error(error);
-		return null;
+	const filename = getFilenameUrl(releaseObj.url);
+	if (process.env['TAURI_PLATFORM'] === undefined) {
+		const handle = await folder.getFileHandle(filename, {
+			create: true
+		});
+		try {
+			const writer = await handle.createWritable();
+			const res = await fetch(`/api/dl?url=${releaseObj.url}`);
+			const ab = await res.arrayBuffer();
+			writer.truncate(ab.byteLength);
+			writer.write(ab);
+			writer.close();
+			return true;
+		} catch (error) {
+			console.error(error);
+			return null;
+		}
+	} else {
+		const { fetch } = window.__TAURI__.http;
+		const { writeBinaryFile } = window.__TAURI__.fs;
+		const response = await fetch('http://localhost:3003/users/2', {
+			method: 'GET',
+			timeout: 30,
+		});
+		if (!response.ok) throw new Error("file fetch failed");
+		await writeBinaryFile(filename, response.data);
 	}
 };
 

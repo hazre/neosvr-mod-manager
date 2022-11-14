@@ -71,7 +71,7 @@
 
 	// check browser support forFileSystemHandle
 	onMount(() => {
-		typeof window.FileSystemHandle != 'undefined' ? (supported = true) : (supported = false);
+		if (window.__TAURI__ === undefined) typeof window.FileSystemHandle != 'undefined' ? (supported = true) : (supported = false);
 	});
 
 	onMount(() => {
