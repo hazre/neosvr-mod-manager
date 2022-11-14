@@ -168,40 +168,44 @@
 				>
 					<div class="py-1">
 						<li>
-							<div class="flex items-center rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
-								<input
-									bind:checked={installed}
-									id="checkbox-item-11"
-									type="checkbox"
-									value=""
-									class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
-								/>
-								<label
-									for="checkbox-item-11"
-									class="ml-2 w-full rounded text-sm font-medium text-gray-900 dark:text-gray-300"
-									>Installed</label
-								>
-							</div>
-						</li>
-					</div>
-					<div class="py-1">
-						{#each filteredCategories as category}
-							<li>
-								<div class="flex items-center rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+							<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+								<div class="flex items-center pl-2">
 									<input
-										on:change={(e) => {
-											categoryFilter = updateCategoryFilter(categoryFilter, category);
-										}}
-										id="checkbox-item-12"
+										bind:checked={installed}
+										id="checkbox-item-installed"
 										type="checkbox"
 										value=""
 										class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
 									/>
 									<label
-										for="checkbox-item-12"
-										class="ml-2 w-full rounded text-sm font-medium text-gray-900 dark:text-gray-300"
-										>{category}</label
+										for="checkbox-item-installed"
+										class="ml-2 w-full rounded py-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+										>Installed</label
 									>
+								</div>
+							</div>
+						</li>
+					</div>
+					<div class="py-1">
+						{#each filteredCategories as category, i}
+							<li>
+								<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+									<div class="flex items-center pl-2">
+										<input
+											on:change={(e) => {
+												categoryFilter = updateCategoryFilter(categoryFilter, category);
+											}}
+											id="checkbox-item-{i}"
+											type="checkbox"
+											value=""
+											class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+										/>
+										<label
+											for="checkbox-item-{i}"
+											class="ml-2 w-full rounded py-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+											>{category}</label
+										>
+									</div>
 								</div>
 							</li>
 						{/each}
