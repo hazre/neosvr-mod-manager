@@ -12,6 +12,7 @@
 	export let searchTerm = '';
 	export let loaded = false;
 	export let installed = false;
+	export let availableUpdates = false;
 	/**
 	 * @type {string[]}
 	 */
@@ -55,6 +56,8 @@
 	} else {
 		filteredCategories = [...categories];
 	}
+
+	$: availableUpdates ? (installed = true) : (installed = false);
 
 	/**
 	 * @type {{ date: { commit: { author: { date: string | number | Date; }; }; }[]; }}
@@ -171,6 +174,7 @@
 							<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
 								<div class="flex items-center pl-2">
 									<input
+										disabled={availableUpdates ? true : false}
 										bind:checked={installed}
 										id="checkbox-item-installed"
 										type="checkbox"
@@ -179,8 +183,27 @@
 									/>
 									<label
 										for="checkbox-item-installed"
+										class="ml-2 w-full rounded py-2 text-sm font-medium  {availableUpdates
+											? 'text-gray-400 dark:text-gray-500'
+											: 'text-gray-900 dark:text-gray-300'}">Installed</label
+									>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+								<div class="flex items-center pl-2">
+									<input
+										bind:checked={availableUpdates}
+										id="checkbox-item-updates"
+										type="checkbox"
+										value=""
+										class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+									/>
+									<label
+										for="checkbox-item-updates"
 										class="ml-2 w-full rounded py-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-										>Installed</label
+										>Updates</label
 									>
 								</div>
 							</div>
