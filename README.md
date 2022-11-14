@@ -55,7 +55,7 @@
 
 ## Limitations
 
-- Due to nature of how [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API) is implemented in the browsers, Neosvr Mod Manager requires a user interaction on each page load to be able to access local files.
+- Due to nature of how [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API) is implemented in the browsers, NeosVR Mod Manager requires a user interaction on each page load to be able to access local files.
 - Firefox currently not supported (Check [here](https://caniuse.com/mdn-api_filesystemhandle))
 - Downloads are proxied via a cloudflare worker due to CORS limitation.
 
