@@ -31,7 +31,7 @@
 
 ## Features
 
-- No installation Required! (100% Web based)
+- No installation Required! (100% Web based, though an app version is under development)
 - Accessible by a [Single Link](https://neom.hazre.dev)
 - Search for [all available mods](https://www.neosmodloader.com/mods)
 - Install and uninstall mods without hassle
@@ -59,11 +59,14 @@
 - Firefox currently not supported (Check [here](https://caniuse.com/mdn-api_filesystemhandle))
 - Downloads are proxied via a cloudflare worker due to CORS limitation.
 
+In the future when the native app is fully implemented it won't have the last two limitations, but it requires installation.
+
 ## Tech stack
 
 - Sveltekit
 - Tailwind CSS + Flowbite CSS Components
-- Cloudflare Pages (Workers)
+- Cloudflare Pages (Workers) - for web app
+- Tauri - for desktop app
 
 ## About
 
@@ -87,12 +90,18 @@ pnpm run dev
 
 # or start the server and open the app in a new browser tab
 pnpm run dev -- --open
+
+# or start the app dev version
+pnpm tauri dev
 ```
 
 To create a production version of your app:
 
 ```bash
+# Web version
 pnpm run build
+# App version
+pnpm tauri build
 ```
 
-You can preview the production build with `npm run preview`.
+You can preview the web production build with `npm run preview`.
