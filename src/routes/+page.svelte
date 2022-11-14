@@ -113,8 +113,15 @@
 	 */
 	let installedList = [];
 	let installed = false;
-	$: if (installed) {
-		installedList = sortedList.filter((item) => item.installed !== undefined || false);
+	let availableUpdates = false;
+	$: if (installed || availableUpdates) {
+		if (availableUpdates) {
+			installedList = sortedList.filter(
+				(item) => (item.installed !== undefined || false) && item.installed_version !== item.latest
+			);
+		} else {
+			installedList = sortedList.filter((item) => item.installed !== undefined || false);
+		}
 	} else {
 		installedList = [...sortedList];
 	}
@@ -168,6 +175,7 @@
 		{neos_folder}
 		bind:categoryFilter
 		bind:installed
+		bind:availableUpdates
 	/>
 	<div
 		class="list grow divide-y divide-gray-200 dark:divide-gray-700"
