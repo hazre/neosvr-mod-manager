@@ -8,6 +8,7 @@
 	import HeroiconsMagnifyingGlass20Solid from '~icons/heroicons/magnifying-glass-20-solid';
 	import HeroiconsAdjustmentsHorizontalSolid from '~icons/heroicons/adjustments-horizontal-solid';
 	import HeroiconsArrowPath20Solid from '~icons/heroicons/arrow-path-20-solid';
+	import { DarkMode } from 'flowbite-svelte';
 
 	export let searchTerm = '';
 	export let loaded = false;
@@ -103,6 +104,9 @@
 				<span>Select NeosVR Folder</span>
 			{/if}
 		</button>
+		<DarkMode
+			btnClass="mr-1 hidden items-center rounded-lg border border-gray-200 p-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:text-gray-300  dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600 sm:inline-block"
+		/>
 		<a
 			href="https://github.com/hazre/neosvr-mod-manager"
 			target="_blank"
