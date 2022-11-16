@@ -8,7 +8,7 @@
 	import HeroiconsMagnifyingGlass20Solid from '~icons/heroicons/magnifying-glass-20-solid';
 	import HeroiconsAdjustmentsHorizontalSolid from '~icons/heroicons/adjustments-horizontal-solid';
 	import HeroiconsArrowPath20Solid from '~icons/heroicons/arrow-path-20-solid';
-	import { DarkMode } from 'flowbite-svelte';
+	import { DarkMode, DropdownDivider } from 'flowbite-svelte';
 
 	export let searchTerm = '';
 	export let loaded = false;
@@ -36,6 +36,14 @@
 		minute: '2-digit',
 		timeZone: 'UTC',
 		timeZoneName: 'short'
+	};
+	let isDropdownOpen = false;
+	const handleDropdownClick = () => {
+		isDropdownOpen = !isDropdownOpen;
+	};
+	const handleDropdownFocusLost = ({ relatedTarget, currentTarget }) => {
+		if (relatedTarget instanceof HTMLElement && currentTarget.contains(relatedTarget)) return;
+		isDropdownOpen = false;
 	};
 
 	onMount(async () => {
@@ -139,23 +147,24 @@
 			</div>
 		</div>
 
-		<div class="dropdown dropdown-end">
-			<!-- svelte-ignore a11y-label-has-associated-control -->
-			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+		<div class="dropdown dropdown-end" on:focusout={handleDropdownFocusLost}>
 			<label
+				for="filter-category"
+				on:click={handleDropdownClick}
 				tabindex="0"
 				class="inline-flex cursor-pointer items-center rounded-lg bg-blue-700 p-4 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 			>
 				<HeroiconsAdjustmentsHorizontalSolid class="h-5 w-5" />
 			</label>
-			<!-- svelte-ignore a11y-label-has-associated-control -->
-			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 			<div
 				tabindex="0"
 				id="dropdownSearch"
 				class="dropdown-content z-10 mt-2 w-60 rounded-lg bg-white shadow dark:bg-gray-700"
+				style:visibility={isDropdownOpen ? 'visible' : 'hidden'}
 			>
-				<div class="p-3">
+				<div class="px-3 py-4">
 					<label for="input-group-search" class="sr-only">Search</label>
 					<div class="relative">
 						<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -171,72 +180,71 @@
 					</div>
 				</div>
 				<ul
-					class="h-48 divide-y divide-gray-100 overflow-y-auto px-3 pb-3 text-sm text-gray-700 dark:divide-gray-600 dark:text-gray-200"
+					class="h-48 select-none overflow-y-auto px-3 pb-3 text-sm text-gray-700 dark:text-gray-200"
 				>
-					<div class="py-1">
-						<li>
-							<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-								<div class="flex items-center pl-2">
-									<input
-										disabled={availableUpdates ? true : false}
-										bind:checked={installed}
-										id="checkbox-item-installed"
-										type="checkbox"
-										value=""
-										class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
-									/>
-									<label
-										for="checkbox-item-installed"
-										class="ml-2 w-full rounded py-2 text-sm font-medium  {availableUpdates
-											? 'text-gray-400 dark:text-gray-500'
-											: 'text-gray-900 dark:text-gray-300'}">Installed</label
-									>
-								</div>
+					<li>
+						<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+							<div class="flex items-center pl-2">
+								<input
+									disabled={availableUpdates ? true : false}
+									bind:checked={installed}
+									id="checkbox-item-installed"
+									type="checkbox"
+									value=""
+									class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+								/>
+								<label
+									for="checkbox-item-installed"
+									class="ml-2 w-full rounded py-2 text-sm font-medium  {availableUpdates
+										? 'text-gray-400 dark:text-gray-500'
+										: 'text-gray-900 dark:text-gray-300'}">Installed</label
+								>
 							</div>
-						</li>
+						</div>
+					</li>
+					<li>
+						<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+							<div class="flex items-center pl-2">
+								<input
+									bind:checked={availableUpdates}
+									id="checkbox-item-updates"
+									type="checkbox"
+									value=""
+									class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+								/>
+								<label
+									for="checkbox-item-updates"
+									class="ml-2 w-full rounded py-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+									>Updates</label
+								>
+							</div>
+						</div>
+					</li>
+					{#each filteredCategories as category, i}
+						{#if i === 0}
+							<DropdownDivider />
+						{/if}
 						<li>
 							<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
 								<div class="flex items-center pl-2">
 									<input
-										bind:checked={availableUpdates}
-										id="checkbox-item-updates"
+										on:change={(e) => {
+											categoryFilter = updateCategoryFilter(categoryFilter, category);
+										}}
+										id="checkbox-item-{i}"
 										type="checkbox"
 										value=""
 										class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
 									/>
 									<label
-										for="checkbox-item-updates"
+										for="checkbox-item-{i}"
 										class="ml-2 w-full rounded py-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-										>Updates</label
+										>{category}</label
 									>
 								</div>
 							</div>
 						</li>
-					</div>
-					<div class="py-1">
-						{#each filteredCategories as category, i}
-							<li>
-								<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-									<div class="flex items-center pl-2">
-										<input
-											on:change={(e) => {
-												categoryFilter = updateCategoryFilter(categoryFilter, category);
-											}}
-											id="checkbox-item-{i}"
-											type="checkbox"
-											value=""
-											class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
-										/>
-										<label
-											for="checkbox-item-{i}"
-											class="ml-2 w-full rounded py-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-											>{category}</label
-										>
-									</div>
-								</div>
-							</li>
-						{/each}
-					</div>
+					{/each}
 				</ul>
 			</div>
 		</div>
