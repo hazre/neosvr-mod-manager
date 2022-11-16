@@ -27,8 +27,6 @@
 
 [Preview](https://user-images.githubusercontent.com/37149950/201496329-7e0cbf73-008b-4e37-a791-b2dff1878e64.mp4)
 
-
-
 ## Features
 
 - No installation Required! (100% Web based)
@@ -37,8 +35,8 @@
 - Install and uninstall mods without hassle
 - Update your mods with one click
 - Responsive design
-- Filter by Categories and Installed
-- Dark mode based on system preference
+- Filter by installed, updates and categories
+- Dark mode
 - View Changelogs
 
 ### Roadmap
