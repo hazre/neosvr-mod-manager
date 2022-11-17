@@ -7,12 +7,14 @@ export async function GET({ url }) {
 
 	const asset = await fetch(new URL(assetLink));
 
-	let body = asset.body;
-	let headers = Object.fromEntries(asset.headers.entries());
+	// let body = asset.body;
+	// let headers = Object.fromEntries(asset.headers.entries());
 
-	headers['Access-Control-Allow-Origin'] = 'http://localhost:5174';
+	const data = await asset.arrayBuffer();
 
-	return new Response(body, {
-		headers: headers
-	});
+	return new Response(new Uint8Array(data));
+
+	// return new Response(body, {
+	// 	headers: headers
+	// });
 }
