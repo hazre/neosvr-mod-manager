@@ -147,9 +147,12 @@ export const downloadFile = async (releaseObj) => {
 	if (!folder) {
 		return null;
 	}
-	const handle = await folder.getFileHandle(getFilenameUrl(releaseObj.url), {
-		create: true
-	});
+	const handle = await folder.getFileHandle(
+		releaseObj?.filename || getFilenameUrl(releaseObj.url),
+		{
+			create: true
+		}
+	);
 	try {
 		const writer = await handle.createWritable();
 		const res = await fetch(`/api/dl?url=${releaseObj.url}`);
@@ -170,7 +173,7 @@ export const deleteFile = async (releaseObj) => {
 		return null;
 	}
 	try {
-		const handle = await folder.removeEntry(getFilenameUrl(releaseObj.url));
+		const handle = await folder.removeEntry(releaseObj?.filename || getFilenameUrl(releaseObj.url));
 		return true;
 	} catch (error) {
 		console.error(error);

@@ -8,11 +8,18 @@
 	import HeroiconsMagnifyingGlass20Solid from '~icons/heroicons/magnifying-glass-20-solid';
 	import HeroiconsAdjustmentsHorizontalSolid from '~icons/heroicons/adjustments-horizontal-solid';
 	import HeroiconsArrowPath20Solid from '~icons/heroicons/arrow-path-20-solid';
-	import { DarkMode, DropdownDivider } from 'flowbite-svelte';
+	import HeroiconsEye from '~icons/heroicons/eye';
+	import HeroiconsPencilSquare from '~icons/heroicons/pencil-square';
+	import HeroiconsQuestionMarkCircle20Solid from '~icons/heroicons/question-mark-circle-20-solid';
+	import { DarkMode, DropdownDivider, Popover } from 'flowbite-svelte';
+	import Helpmodal from './Helpmodal.svelte';
+	import Supportmodal from './Supportmodal.svelte';
 
+	export let ready = false;
 	export let searchTerm = '';
 	export let loaded = false;
 	export let installed = false;
+	export let supported = true;
 	export let availableUpdates = false;
 	/**
 	 * @type {string[]}
@@ -25,6 +32,8 @@
 	export let hh = 0;
 	// let darkmode = false;
 	export let neos_folder = false;
+	let helpModal = false;
+	let supportModal = false;
 	/**
 	 * @type Intl.DateTimeFormatOptions
 	 */
@@ -37,6 +46,12 @@
 		timeZone: 'UTC',
 		timeZoneName: 'short'
 	};
+
+	// check browser support forFileSystemHandle
+	onMount(() => {
+		typeof window.FileSystemHandle != 'undefined' ? (supported = true) : (supported = false);
+	});
+
 	let isDropdownOpen = false;
 	const handleDropdownClick = () => {
 		isDropdownOpen = !isDropdownOpen;
@@ -94,24 +109,76 @@
 				>
 			</h1>
 		</div>
-		<button
-			id="setNeosDirectory"
-			type="button"
-			class="inline-flex items-center rounded-lg border border-gray-200 px-5 py-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500  dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+		<div
+			class="inline-flex cursor-help items-center rounded-lg border border-gray-200 px-5 py-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900  dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+			id="mode"
 		>
-			{#if neos_folder}
-				{#if loaded}
-					<HeroiconsCheck20Solid class="mr-2 -ml-1 h-5 w-5 text-green-500" />
-					Loaded
-				{:else}
-					<HeroiconsArrowPath20Solid class="mr-2 -ml-1 h-5 w-5 text-yellow-500" />
-					Load Mods
-				{/if}
+			{#if loaded}
+				<HeroiconsPencilSquare class="mr-2 -ml-1 h-5 w-5" />
+				Editing Mode
 			{:else}
-				<HeroiconsXMark20Solid class="mr-2 -ml-1 h-5 w-5 text-red-500" />
-				<span>Select NeosVR Folder</span>
+				<HeroiconsEye class="mr-2 -ml-1 h-5 w-5" />
+				Browsing Mode
 			{/if}
+		</div>
+		{#if ready}
+			<Popover
+				triggeredBy="#mode"
+				class="w-72 bg-white text-sm font-light text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400"
+				placement="bottom"
+			>
+				<div class="space-y-2 p-3">
+					<h3 class="font-semibold text-gray-900 dark:text-white">Viewing Modes</h3>
+					<div class="space-y-1">
+						<div>
+							<span class="font-medium">Browsing:</span>
+							Let's you browse mods without installing them.
+						</div>
+						<div>
+							<span class="font-medium">Editing: </span>Let's you install, update and uninstall your
+							mods.
+						</div>
+					</div>
+				</div>
+			</Popover>
+		{/if}
+		{#if supported}
+			<button
+				id="setNeosDirectory"
+				type="button"
+				class="inline-flex items-center rounded-lg border border-gray-200 px-5 py-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500  dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+			>
+				{#if neos_folder}
+					{#if loaded}
+						<HeroiconsCheck20Solid class="mr-2 -ml-1 h-5 w-5 text-green-500" />
+						Change Folder
+					{:else}
+						<HeroiconsArrowPath20Solid class="mr-2 -ml-1 h-5 w-5 text-yellow-500" />
+						Load Mods
+					{/if}
+				{:else}
+					<HeroiconsXMark20Solid class="mr-2 -ml-1 h-5 w-5 text-red-500" />
+					<span>Select NeosVR Folder</span>
+				{/if}
+			</button>
+		{:else}
+			<button
+				on:click={() => (supportModal = true)}
+				class="inline-flex items-center rounded-lg border border-gray-200 px-5 py-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500  dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+			>
+				<HeroiconsXMark20Solid class="mr-2 -ml-1 h-5 w-5 text-red-500" />
+				<span>Unsupported</span>
+			</button>
+			<Supportmodal bind:supportModal />
+		{/if}
+		<button
+			on:click={() => (helpModal = true)}
+			class="mr-1 hidden items-center rounded-lg border border-gray-200 p-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:text-gray-300  dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600 sm:inline-block"
+		>
+			<HeroiconsQuestionMarkCircle20Solid class="h-5 w-5" />
+			<span class="sr-only">Help</span>
 		</button>
+		<Helpmodal bind:helpModal />
 		<DarkMode
 			btnClass="mr-1 hidden items-center rounded-lg border border-gray-200 p-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:text-gray-300  dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600 sm:inline-block"
 		/>
@@ -119,7 +186,6 @@
 			href="https://github.com/hazre/neosvr-mod-manager"
 			target="_blank"
 			rel="noreferrer noopener"
-			data-tooltip-target="tooltip-github-2"
 			class="mr-1 hidden items-center rounded-lg border border-gray-200 p-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:text-gray-300  dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600 sm:inline-block"
 		>
 			<SimpleIconsGithub class="h-5 w-5" />
@@ -182,46 +248,48 @@
 				<ul
 					class="h-48 select-none overflow-y-auto px-3 pb-3 text-sm text-gray-700 dark:text-gray-200"
 				>
-					<li>
-						<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-							<div class="flex items-center pl-2">
-								<input
-									disabled={availableUpdates ? true : false}
-									bind:checked={installed}
-									id="checkbox-item-installed"
-									type="checkbox"
-									value=""
-									class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
-								/>
-								<label
-									for="checkbox-item-installed"
-									class="ml-2 w-full rounded py-2 text-sm font-medium  {availableUpdates
-										? 'text-gray-400 dark:text-gray-500'
-										: 'text-gray-900 dark:text-gray-300'}">Installed</label
-								>
+					{#if loaded}
+						<li>
+							<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+								<div class="flex items-center pl-2">
+									<input
+										disabled={availableUpdates ? true : false}
+										bind:checked={installed}
+										id="checkbox-item-installed"
+										type="checkbox"
+										value=""
+										class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+									/>
+									<label
+										for="checkbox-item-installed"
+										class="ml-2 w-full rounded py-2 text-sm font-medium  {availableUpdates
+											? 'text-gray-400 dark:text-gray-500'
+											: 'text-gray-900 dark:text-gray-300'}">Installed</label
+									>
+								</div>
 							</div>
-						</div>
-					</li>
-					<li>
-						<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-							<div class="flex items-center pl-2">
-								<input
-									bind:checked={availableUpdates}
-									id="checkbox-item-updates"
-									type="checkbox"
-									value=""
-									class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
-								/>
-								<label
-									for="checkbox-item-updates"
-									class="ml-2 w-full rounded py-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-									>Updates</label
-								>
+						</li>
+						<li>
+							<div class="w-full rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+								<div class="flex items-center pl-2">
+									<input
+										bind:checked={availableUpdates}
+										id="checkbox-item-updates"
+										type="checkbox"
+										value=""
+										class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600"
+									/>
+									<label
+										for="checkbox-item-updates"
+										class="ml-2 w-full rounded py-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+										>Updates</label
+									>
+								</div>
 							</div>
-						</div>
-					</li>
+						</li>
+					{/if}
 					{#each filteredCategories as category, i}
-						{#if i === 0}
+						{#if i === 0 && loaded}
 							<DropdownDivider />
 						{/if}
 						<li>

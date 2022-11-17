@@ -5,6 +5,7 @@
 	import HeroiconsArrowDownTray20Solid from '~icons/heroicons/arrow-down-tray-20-solid';
 	import HeroiconsTagSolid from '~icons/heroicons/tag-solid';
 	import HeroiconsExclamationTriangleSolid from '~icons/heroicons/exclamation-triangle-solid';
+	import HeroiconsLink20Solid from '~icons/heroicons/link-20-solid';
 	import Loadingicon from './Loadingicon.svelte';
 	import Changelog from './Changelog.svelte';
 	import { Accordion, AccordionItem } from 'svelte-accessible-accordion';
@@ -14,6 +15,7 @@
 	 */
 	export let filteredList = [];
 	export let index = 0;
+	export let loaded = false;
 	let hovered = false;
 	let loading = false;
 	let showChangelog = false;
@@ -96,14 +98,14 @@
 			<div
 				class="relative inline-flex items-center justify-center overflow-hidden bg-opacity-0 p-0.5 text-xs"
 			>
-				<span class="relative bg-white bg-opacity-0 py-2 px-3 transition-all duration-75 ease-in">
+				<span class="relative bg-opacity-0 py-2 px-3 transition-all duration-75 ease-in">
 					<button
 						on:click={() => (showChangelog = true)}
 						class="ml-2 inline-flex items-center justify-center rounded bg-blue-100 px-2.5 text-xs font-semibold text-blue-800 hover:bg-blue-200 dark:bg-blue-200 dark:text-blue-800 dark:hover:bg-blue-300"
 					>
-						{filteredList[index].installed
+						{filteredList[index].installed_version
 							? filteredList[index].installed_version
-							: Object.keys(filteredList[index].versions)[0]}
+							: filteredList[index].latest}
 					</button>
 				</span>
 			</div>
@@ -174,6 +176,18 @@
 						<span class="sr-only">Installed</span>
 					{/if}
 				</button>
+			</div>
+		{:else if !loaded}
+			<div class="invisible group-hover/item:visible">
+				<a
+					href={filteredList[index].versions[filteredList[index].latest].releaseUrl}
+					target="_blank"
+					rel="noreferrer noopener"
+					class="mr-3 inline-flex items-center rounded-lg border-gray-200 p-2.5 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500  dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+				>
+					<HeroiconsLink20Solid class="h-5 w-5" />
+					<span class="sr-only">Link to release</span>
+				</a>
 			</div>
 		{:else}
 			<div class="{loading ? 'visible' : 'invisible'} group-hover/item:visible">
