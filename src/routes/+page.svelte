@@ -103,10 +103,10 @@
 	$: if (installed || availableUpdates) {
 		if (availableUpdates) {
 			installedList = sortedList.filter(
-				(item) => (item.installed !== undefined || false) && item.installed_version !== item.latest
+				(item) => item.installed !== false && item.installed_version !== item.latest
 			);
 		} else {
-			installedList = sortedList.filter((item) => item.installed !== undefined || false);
+			installedList = sortedList.filter((item) => item.installed !== false);
 		}
 	} else {
 		installedList = [...sortedList];
