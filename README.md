@@ -36,8 +36,9 @@
 - Update your mods with one click
 - Responsive design
 - Filter by installed, updates and categories
-- Dark mode
+- Dark mode Toggle
 - View Changelogs
+- Browse Mods without installing them. (Alternative to [neosmodloader.com](https://www.neosmodloader.com/mods))
 
 ### Roadmap
 
@@ -54,7 +55,7 @@
 ## Limitations
 
 - Due to nature of how [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API) is implemented in the browsers, NeosVR Mod Manager requires a user interaction on each page load to be able to access local files.
-- Firefox currently not supported (Check [here](https://caniuse.com/mdn-api_filesystemhandle))
+- Editing Mode is currently not supported in Firefox (Check [here](https://caniuse.com/mdn-api_filesystemhandle))
 - Downloads are proxied via a cloudflare worker due to CORS limitation.
 
 ## Tech stack
