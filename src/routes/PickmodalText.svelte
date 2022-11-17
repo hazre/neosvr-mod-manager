@@ -1,6 +1,6 @@
 <script>
 	import Pickmodalpath from './Pickmodalpath.svelte';
-	import { fly, fade } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 
 	const emojis = ['😓', '🤨', '🫤', '🤐', '🫠', '😩', '🥺', '😳', '🥴', '😭'];
 
