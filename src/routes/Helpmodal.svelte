@@ -8,12 +8,12 @@
 	const randomEmoji = Math.floor(Math.random() * emojis.length);
 
 	/**
-	 * @type {typeof import("./PickmodalText.svelte").default}
+	 * @type {typeof import("./Pickmodalpath.svelte").default}
 	 */
-	let PickmodalText;
+	let Pickmodalpath;
 
 	onMount(async () => {
-		PickmodalText = (await import('./PickmodalText.svelte')).default;
+		Pickmodalpath = (await import('./Pickmodalpath.svelte')).default;
 	});
 </script>
 
@@ -29,7 +29,7 @@
 			and then select your <span class="text-gray-900 dark:text-white">NeosVR</span>
 			installation folder.
 		</p>
-		<svelte:component this={PickmodalText} />
+		<svelte:component this={Pickmodalpath} />
 		<p class="text-sm leading-relaxed text-gray-500 dark:text-gray-400">
 			<b>Note:</b> due to security reasons, accessing local files inside a browser always requires a
 			user interaction. That's why to you this tool, you need to click the load mods button everytime
