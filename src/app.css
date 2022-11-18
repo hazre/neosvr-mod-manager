@@ -26,6 +26,10 @@ html {
 	--scrollbar-color: #00000040;
 }
 
+.virtual-list-inner {
+	@apply mx-auto max-w-8xl;
+}
+
 /* .virtual-list-inner {
 	@apply mt-[146px];
 } */

@@ -90,7 +90,7 @@
 </script>
 
 <header
-	class="fixed top-0 left-0 right-0 z-10 mx-4 flex flex-col space-y-2 border-gray-200 bg-white py-2.5 dark:bg-gray-900"
+	class="fixed top-0 left-0 right-0 z-10 mx-auto flex max-w-8xl flex-col space-y-2 border-gray-200 bg-white px-4 py-2.5 dark:bg-gray-900"
 	bind:offsetHeight={hh}
 >
 	<div class="flex items-center space-x-2">

@@ -6,7 +6,11 @@ module.exports = {
 		'./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}'
 	],
 	theme: {
-		extend: {}
+		extend: {
+			maxWidth: {
+				'8xl': '90rem'
+			}
+		}
 	},
 	plugins: [require('flowbite/plugin')]
 };
